@@ -10,7 +10,7 @@
 #NOTE: This code has not been thoroughly tested and may not function as advertised.
 #Please report and findings to the author so that they may be addressed in a stable release.
 
-from __future__ import print_function
+from builtins import str
 import pyrow
 import time
 
