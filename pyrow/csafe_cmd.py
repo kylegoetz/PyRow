@@ -7,6 +7,9 @@
 #ToDo: change print statments to proper errors
 from __future__ import print_function
 from __future__ import absolute_import
+from builtins import chr
+from builtins import str
+from builtins import range
 from . import csafe_dic
 
 def __int2bytes(numbytes, integer):

@@ -7,6 +7,9 @@
 
 from __future__ import print_function
 from __future__ import absolute_import
+from __future__ import division
+from builtins import object
+from past.utils import old_div
 import usb.core
 import usb.util
 from usb import USBError
@@ -88,17 +91,17 @@ class pyrow(object):
         results = self.send(command)
 
         monitor = {}
-        monitor['time'] = (results['CSAFE_PM_GET_WORKTIME'][0] + \
-            results['CSAFE_PM_GET_WORKTIME'][1])/100.
+        monitor['time'] = old_div((results['CSAFE_PM_GET_WORKTIME'][0] + \
+            results['CSAFE_PM_GET_WORKTIME'][1]),100.)
 
-        monitor['distance'] = (results['CSAFE_PM_GET_WORKDISTANCE'][0] + \
-            results['CSAFE_PM_GET_WORKDISTANCE'][1])/10.
+        monitor['distance'] = old_div((results['CSAFE_PM_GET_WORKDISTANCE'][0] + \
+            results['CSAFE_PM_GET_WORKDISTANCE'][1]),10.)
 
         monitor['spm'] = results['CSAFE_GETCADENCE_CMD'][0]
         #Rowing machine always returns power as Watts
         monitor['power'] = results['CSAFE_GETPOWER_CMD'][0]
         if monitor['power']:
-            monitor['pace'] = ((2.8 / results['CSAFE_GETPOWER_CMD'][0]) ** (1./3)) * 500
+            monitor['pace'] = ((old_div(2.8, results['CSAFE_GETPOWER_CMD'][0])) ** (old_div(1.,3))) * 500
             monitor['calhr'] = results['CSAFE_GETPOWER_CMD'][0]  * (4.0 * 0.8604) + 300.
         else:
             monitor['pace'], monitor['calhr'] = 0, 0
@@ -107,7 +110,7 @@ class pyrow(object):
 
         if forceplot:
             #get amount of returned data in bytes
-            datapoints = results['CSAFE_PM_GET_FORCEPLOTDATA'][0] /2
+            datapoints = old_div(results['CSAFE_PM_GET_FORCEPLOTDATA'][0],2)
             monitor['forceplot'] = results['CSAFE_PM_GET_FORCEPLOTDATA'][1:(datapoints+1)]
             monitor['strokestate'] = results['CSAFE_PM_GET_STROKESTATE'][0]
 
@@ -124,7 +127,7 @@ class pyrow(object):
         results = self.send(command)
 
         forceplot = {}
-        datapoints = results['CSAFE_PM_GET_FORCEPLOTDATA'][0] / 2
+        datapoints = old_div(results['CSAFE_PM_GET_FORCEPLOTDATA'][0], 2)
         forceplot['forceplot'] = results['CSAFE_PM_GET_FORCEPLOTDATA'][1:(datapoints+1)]
         forceplot['strokestate'] = results['CSAFE_PM_GET_STROKESTATE'][0]
 
@@ -251,7 +254,7 @@ class pyrow(object):
                 self.__checkvalue(split, "Split Time", max(2000, minsplit), time_raw*100)
                 command.extend(['CSAFE_PM_SET_SPLITDURATION', 0, split])
             elif distance != None and program == None:
-                minsplit = int(distance/30+0.5) #split distance that will occur 30 workout_times (m)
+                minsplit = int(old_div(distance,30)+0.5) #split distance that will occur 30 workout_times (m)
                 self.__checkvalue(split, "Split distance", max(100, minsplit), distance)
                 command.extend(['CSAFE_PM_SET_SPLITDURATION', 128, split])
             else:
@@ -260,9 +263,9 @@ class pyrow(object):
 
         #Set Pace
         if pace != None:
-            powerpace = int(round(2.8 / ((pace / 500.) ** 3)))
+            powerpace = int(round(old_div(2.8, ((old_div(pace, 500.)) ** 3))))
         elif calpace != None:
-            powerpace = int(round((calpace - 300.)/(4.0 * 0.8604)))
+            powerpace = int(round(old_div((calpace - 300.),(4.0 * 0.8604))))
         if powerpace != None:
             command.extend(['CSAFE_SETPOWER_CMD', powerpace, 88]) #88 = watts
 
@@ -282,7 +285,7 @@ class pyrow(object):
         #if not program sleeps till time has passed
         now = datetime.datetime.now()
         delta = now - self.__lastsend
-        deltaraw = delta.seconds + delta.microseconds/1000000.
+        deltaraw = delta.seconds + old_div(delta.microseconds,1000000.)
         if deltaraw < MIN_FRAME_GAP:
             time.sleep(MIN_FRAME_GAP - deltaraw)
 
