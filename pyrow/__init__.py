@@ -4,10 +4,6 @@
 #NOTE: This code has not been thoroughly tested and may not function as advertised.
 #   Please report and findings to the author so that they may be addressed in a stable release.
 
-
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import division
 from builtins import object
 from past.utils import old_div
 import usb.core
