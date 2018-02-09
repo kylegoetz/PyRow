@@ -21,6 +21,7 @@ Site: http://www.newhavenrowingclub.org/pyrow/
 
 ## LICENSE
 Copyright (c) 2011 - 2015, Sam Gambrell
+Copyright (c) 2018, Kyle Goetz
 
 Licensed under the Simplified BSD License.
 
