@@ -6,5 +6,5 @@ setup(name='PyRow',
     version='0.1',
     description='Module for interfacing with Concept2 PM3/PM4 monitors',
     packages=['pyrow'],
-    install_requires=['pyusb']
+    install_requires=['pyusb', 'future']
 )
